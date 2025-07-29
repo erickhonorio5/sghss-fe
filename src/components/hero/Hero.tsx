@@ -10,13 +10,13 @@ const Hero = () => {
   }
 
   return (
-      <section className="relative py-16 md:min-h-[80vh] flex items-center justify-center px-4 sm:px-6 bg-background dark:bg-black">
+      <section className=" relative py-40 md:min-h-[80vh] flex items-center justify-center px-4 sm:px-6 bg-background dark:bg-black">
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="space-y-6 md:space-y-8"
+              className="space-y-4 md:space-y-1"
           >
             {/* Título Principal */}
             <div className="space-y-4 md:space-y-6">

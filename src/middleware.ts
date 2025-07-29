@@ -6,7 +6,7 @@ const authRoutes = ['/auth/signin']
 
 export function middleware(request: NextRequest) {
     const currentPath = request.nextUrl.pathname
-    const token = request.cookies.get('jwt')?.value
+    const token = request.cookies.get('token')?.value
 
     if (protectedRoutes.some(route => currentPath.startsWith(route))) {
         if (!token) {
@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
             }
         } catch (error) {
             const response = NextResponse.redirect(new URL('/auth/signin', request.url))
-            response.cookies.delete('jwt')
+            response.cookies.delete('token')
             return response
         }
     }

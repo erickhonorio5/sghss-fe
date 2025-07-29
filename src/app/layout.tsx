@@ -3,7 +3,8 @@ import { RootProvider } from "@/context/RootProvider";
 import { Inter } from "next/font/google";
 import {Metadata} from "next";
 import {Header} from "@/components/header/Header";
-import Lines from "@/components/lines";
+import Lines from "@/components/lines/Lines";
+import ScrollToTop from "@/components/scrollToTop/ScrollToTop";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
             <Lines />
             <Header />
                 {children}
+            <ScrollToTop />
         </RootProvider>
         </body>
         </html>
