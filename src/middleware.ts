@@ -1,37 +1,39 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 
-const protectedRoutes = ['/dashboard']
-const authRoutes = ['/auth/signin']
+const ROUTES = {
+    auth: {
+        paths: ['/auth/login', '/auth/signup', '/auth/signin'],
+        redirect: '/dashboard'
+    },
+    protected: {
+        paths: ['/dashboard', '/dashboard/:path*'],
+        redirect: '/auth/login'
+    }
+} as const
 
 export function middleware(request: NextRequest) {
-    const currentPath = request.nextUrl.pathname
+    const { pathname } = request.nextUrl
     const token = request.cookies.get('token')?.value
 
-    if (protectedRoutes.some(route => currentPath.startsWith(route))) {
-        if (!token) {
-            return NextResponse.redirect(new URL('/auth/signin', request.url))
-        }
+    const isAuthRoute = ROUTES.auth.paths.some(route =>
+        pathname === route || pathname.startsWith(route + '/')
+    )
 
-        try {
-            const payload = JSON.parse(atob(token.split('.')[1]))
-            if (!payload.exp || Date.now() >= payload.exp * 1000) {
-                throw new Error('Token expirado')
-            }
-        } catch (error) {
-            const response = NextResponse.redirect(new URL('/auth/signin', request.url))
-            response.cookies.delete('token')
-            return response
-        }
+    const isProtectedRoute = ROUTES.protected.paths.some(route =>
+        pathname === route || pathname.startsWith(route.replace(':path*', ''))
+    )
+
+    if (token && isAuthRoute) {
+        return NextResponse.redirect(new URL(ROUTES.auth.redirect, request.url))
     }
 
-    if (authRoutes.includes(currentPath) && token) {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
+    if (!token && isProtectedRoute) {
+        return NextResponse.redirect(new URL(ROUTES.protected.redirect, request.url))
     }
 
     return NextResponse.next()
 }
 
 export const config = {
-    matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+    matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)']
 }
