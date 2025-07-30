@@ -1,5 +1,11 @@
-'use client'
 
-export default function layout() {
-    <div> ola</div>
+
+export default function DashboardLayout({
+                                            children,
+                                        }: {
+    children: React.ReactNode;
+}) {
+    return (
+        <div>e</div>
+    );
 }

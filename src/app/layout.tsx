@@ -1,10 +1,7 @@
 import "./globals.css";
-import { RootProvider } from "@/context/RootProvider";
 import { Inter } from "next/font/google";
-import {Metadata} from "next";
-import {Header} from "@/components/header/Header";
-import Lines from "@/components/lines/Lines";
-import ScrollToTop from "@/components/scrollToTop/ScrollToTop";
+import type { Metadata } from "next";
+import {RootProvider} from "@/context/RootProvider";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,10 +19,7 @@ export default function RootLayout({
         <html lang="pt-BR" suppressHydrationWarning>
         <body className={`dark:bg-black ${inter.className}`}>
         <RootProvider>
-            <Lines />
-            <Header />
-                {children}
-            <ScrollToTop />
+            {children}
         </RootProvider>
         </body>
         </html>

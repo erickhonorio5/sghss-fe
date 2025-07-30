@@ -2,12 +2,12 @@ import { NextResponse, type NextRequest } from 'next/server'
 
 const ROUTES = {
     auth: {
-        paths: ['/auth/login', '/auth/signup', '/auth/signin'],
+        paths: ['/auth/signin', '/auth/signup'],
         redirect: '/dashboard'
     },
     protected: {
         paths: ['/dashboard', '/dashboard/:path*'],
-        redirect: '/auth/login'
+        redirect: '/auth/signin'
     }
 } as const
 
