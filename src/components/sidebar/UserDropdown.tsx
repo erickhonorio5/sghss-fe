@@ -117,7 +117,7 @@ export function UserDropdown() {
                                 transition={{ type: "spring", stiffness: 300 }}
                             >
                                 <Link
-                                    href="/signin"
+                                    href="/auth/signin"
                                     className="flex items-center gap-3 px-3 py-2 mt-3 font-medium rounded-lg text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                                     role="menuitem"
                                 >
