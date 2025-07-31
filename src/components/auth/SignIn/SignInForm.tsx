@@ -8,6 +8,7 @@ import Link from "next/link";
 import { FormProvider } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { LoginSchemaType } from "@/lib/schema/SignInSchema";
+import { showToast } from "@/lib/showToast";
 
 export const SignInForm = () => {
   const formMethods = useSignInForm();
@@ -17,8 +18,12 @@ export const SignInForm = () => {
   const onSubmit = (data: LoginSchemaType) => {
     mutate(data, {
       onSuccess: () => {
+        showToast.success("Login realizado!", "Redirecionando para o dashboard...");
         router.push("/dashboard");
       },
+      onError: () => {
+        showToast.error("Falha no login", "Verifique suas credenciais");
+      }
     });
   };
 

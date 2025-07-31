@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import React from "react";
 import { useUserDropdownStore } from "@/stores/userDropdownStore";
 import { useCurrentUser } from "@/hooks/auth/useCurrentUser";
@@ -9,12 +8,31 @@ import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { ChevronDown, User, Settings, HelpCircle, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useLogout } from "@/hooks/auth/useLogout";
+import { useLogoutMutation } from "@/hooks/auth/useLogoutMutation";
+import { showToast } from "@/lib/showToast";
 
 export function UserDropdown() {
   const { isOpen, toggleDropdown, closeDropdown } = useUserDropdownStore();
   const { data: user, isLoading } = useCurrentUser();
-  const { logout, isPending } = useLogout();
+  const { performLogout, isPending } = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await performLogout();
+      closeDropdown();
+      showToast.success(
+        "Logout realizado!",
+        "Você foi desconectado com sucesso"
+      );
+    } catch (error) {
+      showToast.error(
+        "Erro no logout",
+        error instanceof Error
+          ? error.message
+          : "Não foi possível sair no momento"
+      );
+    }
+  };
 
   return (
     <motion.div className="relative" whileHover={{ scale: 1.03 }}>
@@ -22,7 +40,7 @@ export function UserDropdown() {
         onClick={toggleDropdown}
         aria-haspopup="true"
         aria-expanded={isOpen}
-        aria-label="User menu"
+        aria-label="Menu do usuário"
         className="flex items-center text-gray-700 dark:text-gray-400"
         whileTap={{ scale: 0.97 }}
       >
@@ -60,7 +78,7 @@ export function UserDropdown() {
               onClose={closeDropdown}
               className="absolute right-0 mt-2 flex w-[260px] flex-col rounded-xl border border-gray-200 bg-white p-3 shadow-theme-lg dark:border-gray-700 dark:bg-gray-900"
               role="menu"
-              aria-label="User menu dropdown"
+              aria-label="Menu dropdown do usuário"
             >
               <motion.div
                 className="mb-3"
@@ -96,8 +114,8 @@ export function UserDropdown() {
                     href="/profile"
                     className="flex items-center gap-3 px-3 py-2 font-medium rounded-lg text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                   >
-                    <User />
-                    Edit profile
+                    <User className="w-5 h-5" />
+                    <span>Editar perfil</span>
                   </DropdownItem>
                 </motion.li>
 
@@ -111,8 +129,8 @@ export function UserDropdown() {
                     href="/settings"
                     className="flex items-center gap-3 px-3 py-2 font-medium rounded-lg text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                   >
-                    <Settings />
-                    Account settings
+                    <Settings className="w-5 h-5" />
+                    <span>Configurações</span>
                   </DropdownItem>
                 </motion.li>
 
@@ -126,8 +144,8 @@ export function UserDropdown() {
                     href="/support"
                     className="flex items-center gap-3 px-3 py-2 font-medium rounded-lg text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                   >
-                    <HelpCircle />
-                    Support
+                    <HelpCircle className="w-5 h-5" />
+                    <span>Suporte</span>
                   </DropdownItem>
                 </motion.li>
               </ul>
@@ -137,13 +155,12 @@ export function UserDropdown() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <button
-                  onClick={() => logout()}
+                  onClick={handleLogout}
                   disabled={isPending}
-                  className="w-full flex items-center gap-3 px-3 py-2 mt-3 font-medium rounded-lg text-left text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-                  role="menuitem"
+                  className="flex items-center gap-3 w-full px-3 py-2 mt-3 font-medium rounded-lg text-gray-700 text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-300"
                 >
-                  <LogOut />
-                  {isPending ? "Saindo..." : "Sign out"}
+                  <LogOut className="w-5 h-5" />
+                  <span>{isPending ? "Saindo..." : "Sair"}</span>
                 </button>
               </motion.div>
             </Dropdown>
