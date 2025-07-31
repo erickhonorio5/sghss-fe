@@ -1,11 +1,9 @@
 'use client';
 
-import { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
 
 export const AuthLayout = ({ children }: { children: React.ReactNode }) => (
     <>
-        <Toaster position="top-right" />
         <section className="pb-12 pt-32 lg:pb-24 lg:pt-44 xl:pb-28 xl:pt-48">
             <div className="relative z-10 mx-auto max-w-screen-md px-6 pb-8 pt-10 lg:px-12 xl:px-20">
                 {/* Fundo decorativo */}

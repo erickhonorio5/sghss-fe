@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 
 export const useSignUpMutation = () => {
-
   return useMutation({
     mutationFn: signUp,
     onSuccess: () => {
@@ -14,10 +13,10 @@ export const useSignUpMutation = () => {
     },
     onError: (error: AxiosError) => {
       toast.error(
-          error.response?.status === 409
-              ? "Usuário já existe"
-              : "Erro ao realizar cadastro"
+        error.response?.status === 409
+          ? "Usuário já existe"
+          : "Erro ao realizar cadastro"
       );
-    }
+    },
   });
 };
