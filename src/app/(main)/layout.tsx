@@ -18,13 +18,11 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <html lang="pt-BR" suppressHydrationWarning>
-        <body className={`dark:bg-black ${inter.className}`}>
+        <>
             <Lines />
             <Header />
                 {children}
             <ScrollToTop />
-        </body>
-        </html>
+        </>
     );
 }
