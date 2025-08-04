@@ -38,7 +38,6 @@ const notifications: Notification[] = [
         imageSrc: "/images/user/user-03.jpg",
         statusColor: "bg-success-500",
     },
-    // ...outros
 ];
 
 export function NotificationDropdown() {

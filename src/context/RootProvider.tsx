@@ -1,4 +1,3 @@
-// context/RootProvider.tsx
 import { ReactNode } from "react";
 import { QueryProvider } from "@/context/QueryProvider";
 import { Toaster } from "react-hot-toast";
