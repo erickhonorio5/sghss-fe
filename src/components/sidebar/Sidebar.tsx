@@ -34,8 +34,8 @@ export const Sidebar = () => {
                 icon={Users}
                 label="Pacientes"
                 submenu={[
-                    { label: "Lista", href: "/pacientes" },
-                    { label: "Novo", href: "/pacientes/novo" },
+                    { label: "Lista", href: "/dashboard/patients" },
+                    { label: "Novo", href: "/dashboard/patients/new" },
                 ]}
             />
             <SidebarItem

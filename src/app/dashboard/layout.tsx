@@ -11,8 +11,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return (
         <div>
             <Sidebar />
-
-            {/* Aplica padding apenas uma vez aqui */}
             <main
                 style={{ paddingLeft: sidebarWidth }}
                 className="transition-padding duration-300 ease-in-out min-h-screen overflow-x-hidden"
