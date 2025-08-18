@@ -1,57 +1,66 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { format } from "date-fns";
+import { PatientRequestDTO } from "@/types/patient";
 
-export const addressSchema = z.object({
-  street: z.string().min(3, "Rua deve ter pelo menos 3 caracteres"),
-  number: z.string().min(1, "Número é obrigatório"),
-  neighborhood: z.string().min(2, "Bairro deve ter pelo menos 2 caracteres"),
-  city: z.string().min(2, "Cidade deve ter pelo menos 2 caracteres"),
-  state: z.string().length(2, "Estado deve ter exatamente 2 caracteres"),
-  zipCode: z.string().regex(/^\d{5}-\d{3}$|^\d{8}$/, "CEP deve estar no formato 00000-000 ou 00000000")
-});
-
-export const insuranceSchema = z.object({
-  name: z.string().min(3, "Nome do plano deve ter pelo menos 3 caracteres"),
-  number: z.string().min(1, "Número do plano é obrigatório"),
-  expiryDate: z.string().refine(
-    (date) => {
-      const parsedDate = new Date(date);
-      return !isNaN(parsedDate.getTime()) && parsedDate > new Date();
-    },
-    { message: "Data de validade deve ser uma data futura válida" }
-  )
-});
-
-const cpfRegex = /^\d{11}$/;
-
-export const patientSchema = z.object({
+export const patientFormSchema = z.object({
   name: z.string().min(3, "Nome deve ter pelo menos 3 caracteres"),
-  cpf: z.string().regex(cpfRegex, "CPF deve conter exatamente 11 dígitos numéricos"),
-  email: z.string().email("E-mail inválido"),
-  phone: z.string().regex(/^\d{10,11}$/, "Telefone deve ter 10 ou 11 dígitos"),
-  birthDate: z.string().refine(
-    (date) => {
-      const parsedDate = new Date(date);
-      const now = new Date();
-      const minAge = new Date();
-      minAge.setFullYear(now.getFullYear() - 120);
-
-      return !isNaN(parsedDate.getTime()) && parsedDate <= now && parsedDate >= minAge;
-    },
-    { message: "Data de nascimento deve ser uma data válida e não pode ser futura" }
+  cpf: z.string().min(11, "CPF inválido").max(14, "CPF inválido"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().min(10, "Telefone inválido"),
+  birthDate: z.date().optional().refine(
+    (date) => !!date,
+    {
+      message: "Data de nascimento é obrigatória",
+    }
   ),
-  address: addressSchema,
-  insurance: insuranceSchema,
-  active: z.boolean().default(true)
+  address: z.object({
+    street: z.string().min(3, "Endereço deve ter pelo menos 3 caracteres"),
+    number: z.string().min(1, "Número é obrigatório"),
+    neighborhood: z.string().min(2, "Bairro deve ter pelo menos 2 caracteres"),
+    city: z.string().min(2, "Cidade deve ter pelo menos 2 caracteres"),
+    state: z.string().length(2, "Estado deve ter 2 caracteres"),
+    zipCode: z.string().min(8, "CEP inválido").max(9, "CEP inválido"),
+  }),
+  insurance: z.object({
+    name: z.string().min(2, "Nome do plano deve ter pelo menos 2 caracteres"),
+    number: z.string().min(1, "Número do plano é obrigatório"),
+    expiryDate: z.date().optional().refine(
+      (date) => !!date,
+      {
+        message: "Data de validade é obrigatória",
+      }
+    ),
+  }),
+  active: z.boolean().default(true),
 });
 
-export type PatientFormType = z.infer<typeof patientSchema>;
+export type PatientFormValues = z.infer<typeof patientFormSchema>;
 
-export const patientFiltersSchema = z.object({
-  search: z.string().optional(),
-  active: z.boolean().optional().nullable(),
-  page: z.number().int().nonnegative().default(0),
-  size: z.number().int().positive().default(10),
-  sort: z.string().default("name,asc")
-});
+export const convertFormToDTO = (data: PatientFormValues): PatientRequestDTO => {
+  if (!data.birthDate || !data.insurance.expiryDate) {
+    throw new Error("Datas obrigatórias não preenchidas");
+  }
 
-export type PatientFiltersType = z.infer<typeof patientFiltersSchema>;
+  return {
+    name: data.name,
+    cpf: data.cpf.replace(/\D/g, ''),
+    email: data.email,
+    phone: data.phone.replace(/\D/g, ''),
+    birthDate: format(data.birthDate, 'yyyy-MM-dd'),
+    address: {
+      street: data.address.street,
+      number: data.address.number,
+      neighborhood: data.address.neighborhood,
+      city: data.address.city,
+      state: data.address.state,
+      zipCode: data.address.zipCode.replace(/\D/g, ''),
+    },
+    insurance: {
+      name: data.insurance.name,
+      number: data.insurance.number,
+      expiryDate: format(data.insurance.expiryDate, 'yyyy-MM-dd'),
+    },
+    active: data.active,
+  };
+};
+

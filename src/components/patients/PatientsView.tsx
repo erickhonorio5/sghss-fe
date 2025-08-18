@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Search, UserPlus, ArrowUpDown } from "lucide-react";
@@ -14,7 +13,6 @@ import { Pagination } from "./Pagination";
 import { PatientModal } from "./PatientModal";
 
 export const PatientsView = () => {
-  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const {
